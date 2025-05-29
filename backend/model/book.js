@@ -7,6 +7,10 @@ export default bookModel = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
         },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         publication_year: {
             type: DataTypes.STRING,
             allowNull: false,

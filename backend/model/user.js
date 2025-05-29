@@ -8,7 +8,7 @@ export default userModel = (sequelize, Sequelize) => {
             primaryKey: true,
         },
         name: {
-            name: DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         email: {
@@ -20,7 +20,7 @@ export default userModel = (sequelize, Sequelize) => {
             allowNull: false,
         },
         membership_date: {
-            type: DataTypes.TIMESTAMP,
+            type: DataTypes.DATE,
             allowNull: false,
         },
         phone: {
