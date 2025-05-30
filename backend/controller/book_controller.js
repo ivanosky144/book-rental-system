@@ -1,6 +1,6 @@
 import db from '../models/index.js';
 
-const Book = db.books;
+const Book = db.Book;
 
 export const createBook = async (req, res) => {
   try {
