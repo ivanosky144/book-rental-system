@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 
-export default bookModel = (sequelize, Sequelize) => {
+const bookModel = (sequelize, Sequelize) => {
     const model = sequelize.define("books", {
         id: {
             type: DataTypes.INTEGER,
@@ -31,8 +31,20 @@ export default bookModel = (sequelize, Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            field: 'created_at',
+            defaultValue: Sequelize.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            field: 'updated_at',
+            defaultValue: Sequelize.NOW,
+        },
     });
 
     return model;
 }   
 
+
+export default bookModel;

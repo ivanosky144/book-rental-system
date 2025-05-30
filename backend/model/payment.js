@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 
-export default paymentModel = (sequelize, Sequelize) => {
+const paymentModel = (sequelize, Sequelize) => {
     const model = sequelize.define("payments", {
         id: {
             type: DataTypes.INTEGER,
@@ -27,8 +27,20 @@ export default paymentModel = (sequelize, Sequelize) => {
             type: DataTypes.ENUM("cash", "credit_card", "debit_card", "e_wallet"),
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            field: 'created_at',
+            defaultValue: Sequelize.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            field: 'updated_at',
+            defaultValue: Sequelize.NOW,
+        },
     });
 
     return model;
 }   
 
+
+export default paymentModel;

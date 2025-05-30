@@ -1,35 +1,33 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; 
+import userModel from "../model/user.js";
+import authorModel from "../model/author.js";
+import bookModel from "../model/book.js";
+import bookCopyModel from "../model/book_copy.js";
+import genreModel from "../model/genre.js";
+import paymentModel from "../model/payment.js";
+import publisherModel from "../model/publisher.js";
+import rentalModel from "../model/rental.js";
+import reservationModel from "../model/reservation.js";
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+const files = fs.readdirSync(__dirname).filter(file =>
+  file !== basename && file.endsWith('.js')
+);
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+for (const file of files) {
+  const { default: modelFn } = await import(path.join(__dirname, file));
+  const model = modelFn(sequelize, DataTypes);
+  db[model.name] = model;
+}
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
@@ -38,6 +36,15 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.Sequelize = DataTypes;
+db.User = userModel(sequelize, DataTypes);
+db.Author = authorModel(sequelize, DataTypes);
+db.Book = bookModel(sequelize, DataTypes);
+db.BookCopy = bookCopyModel(sequelize, DataTypes);
+db.Genre = genreModel(sequelize, DataTypes);
+db.Payment = paymentModel(sequelize, DataTypes);
+db.Publisher = publisherModel(sequelize, DataTypes);
+db.Rental = rentalModel(sequelize, DataTypes);
+db.Reservation = reservationModel(sequelize, DataTypes);
 
-module.exports = db;
+export default db;

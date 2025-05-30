@@ -1,10 +1,11 @@
 import { DataTypes } from "sequelize";
 
-export default rentalModel = (sequelize, Sequelize) => {
+const rentalModel = (sequelize, Sequelize) => {
     const model = sequelize.define("rentals", {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
+            primaryKey: true,
         },
         user_id: {
             type: DataTypes.INTEGER,
@@ -30,8 +31,20 @@ export default rentalModel = (sequelize, Sequelize) => {
             type: DataTypes.ENUM("active", "completed", "overdue"),
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            field: 'created_at',
+            defaultValue: Sequelize.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            field: 'updated_at',
+            defaultValue: Sequelize.NOW,
+        },
     });
 
     return model;
 }   
 
+
+export default rentalModel;

@@ -1,21 +1,21 @@
 import { DataTypes } from "sequelize";
 
-export default reservationModel = (sequelize, Sequelize) => {
+const reservationModel = (sequelize, Sequelize) => {
     const model = sequelize.define("reservations", {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        userId: {
+        user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        bookId: {
+        book_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        reservationDate: {
+        reservation_date: {
             type: DataTypes.DATE,
             allowNull: false,
         },
@@ -24,8 +24,19 @@ export default reservationModel = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: "pending",
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            field: 'created_at',
+            defaultValue: Sequelize.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            field: 'updated_at',
+            defaultValue: Sequelize.NOW,
+        },
     });
 
     return model;
 }   
 
+export default reservationModel;
