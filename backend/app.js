@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 db.sequelize.authenticate()
   .then(() => {
-    console.log('✅ Database connected.');
+    console.log('✅ Connected to SQL database.');
     return db.sequelize.sync();
   })
   .then(() => {
@@ -24,5 +24,5 @@ db.sequelize.authenticate()
     });
   })
   .catch((error) => {
-    console.error('❌ Failed to connect to the database:', error);
+    console.error('❌ Failed to connect to the SQL database:', error);
   });
