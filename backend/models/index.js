@@ -12,6 +12,7 @@ import paymentModel from "../model/payment.js";
 import publisherModel from "../model/publisher.js";
 import rentalModel from "../model/rental.js";
 import reservationModel from "../model/reservation.js";
+import adminModel from '../model/admin.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,5 +47,6 @@ db.Payment = paymentModel(sequelize, DataTypes);
 db.Publisher = publisherModel(sequelize, DataTypes);
 db.Rental = rentalModel(sequelize, DataTypes);
 db.Reservation = reservationModel(sequelize, DataTypes);
+db.Admin = adminModel(sequelize, DataTypes);
 
 export default db;

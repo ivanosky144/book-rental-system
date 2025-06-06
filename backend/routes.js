@@ -55,10 +55,17 @@ import {
   updatePublisher,
   deletePublisher
 } from './controller/publisher_controller.js';
+import {
+  adminLogin,
+  adminRegister
+} from './controller/auth_controller.js';
 
 
 
 const router = express.Router();
+
+router.post('/api/admins/login', adminLogin);
+router.post('/api/admins/register', adminRegister);
 
 router.post('/api/users', createUser);
 router.get('/api/users', getAllUsers);
