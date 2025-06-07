@@ -1,6 +1,7 @@
 import db from '../models/index.js';
 
 const Genre = db.Genre;
+const sequelize = db.sequelize;
 
 export const createGenre = async (req, res) => {
   try {
@@ -15,9 +16,21 @@ export const createGenre = async (req, res) => {
 
 export const getAllGenres = async (req, res) => {
   try {
-    const genres = await Genre.findAll();
+    const [genres] = await sequelize.query(`
+      SELECT 
+        g.id,
+        g.name,
+        g.created_at AS "createdAt",
+        g.updated_at AS "updatedAt",
+        CAST(COUNT(bg.book_id) AS INTEGER) AS book_count
+      FROM genres g
+      LEFT JOIN book_genres bg ON g.id = bg.genre_id
+      GROUP BY g.id
+      ORDER BY g.name;
+    `);
     res.status(200).json({ message: "Genres retrieved successfully", data: genres });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Failed to retrieve genres", error });
   }
 };

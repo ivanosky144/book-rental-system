@@ -3,14 +3,12 @@ import bodyParser from 'body-parser';
 import db from './models/index.js'; 
 import dotenv from 'dotenv';
 import routes from './routes.js';
-import authMiddleware from './middleware/auth_middleware.js';
 
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
-app.use(authMiddleware);
 app.use(routes);
 
 const PORT = process.env.PORT || 3000;

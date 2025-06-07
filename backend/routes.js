@@ -59,6 +59,7 @@ import {
   adminLogin,
   adminRegister
 } from './controller/auth_controller.js';
+import authMiddleware from './middleware/auth_middleware.js';
 
 
 
@@ -66,6 +67,8 @@ const router = express.Router();
 
 router.post('/api/admins/login', adminLogin);
 router.post('/api/admins/register', adminRegister);
+
+router.use(authMiddleware);
 
 router.post('/api/users', createUser);
 router.get('/api/users', getAllUsers);

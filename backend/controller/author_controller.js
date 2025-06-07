@@ -1,6 +1,7 @@
 import db from '../models/index.js';
   
 const Author = db.Author;
+const sequelize = db.sequelize;
 
 export const createAuthor = async (req, res) => {
   try {
@@ -15,8 +16,19 @@ export const createAuthor = async (req, res) => {
 
 export const getAllAuthors = async (req, res) => {
   try {
-    const authors = await Author.findAll();
-    res.status(201).json({message: "Authors has been retrieved successfully", data: authors});
+    const [authors] = await sequelize.query(`
+      SELECT 
+        a.id,
+        a.name,
+        a.created_at AS "createdAt",
+        a.updated_at AS "updatedAt",
+        CAST(COUNT(ba.book_id) AS INTEGER) AS book_count
+      FROM authors a
+      LEFT JOIN book_authors ba ON a.id = ba.author_id
+      GROUP BY a.id
+      ORDER BY a.name;
+    `);
+      res.status(201).json({message: "Authors has been retrieved successfully", data: authors});
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve authors", error });
   }

@@ -4,11 +4,13 @@ const bookGenreModel = (sequelize, Sequelize) => {
     const model = sequelize.define("book_genres", {
         genre_id: {
             type: DataTypes.INTEGER,
-            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true, 
         },
         book_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            primaryKey: true,
         },
         createdAt: {
             type: DataTypes.DATE,

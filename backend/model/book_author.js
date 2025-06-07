@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 
-export default bookAuthorModel = (sequelize, Sequelize) => {
+const bookAuthorModel = (sequelize, Sequelize) => {
     const model = sequelize.define("book_authors", {
         author_id: {
             type: DataTypes.INTEGER,
@@ -26,3 +26,4 @@ export default bookAuthorModel = (sequelize, Sequelize) => {
     return model;
 }   
 
+export default bookAuthorModel
