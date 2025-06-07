@@ -37,7 +37,7 @@ export const getAllAuthors = async (req, res) => {
 export const getAuthorById = async (req, res) => {
   try {
     const author = await Author.findByPk(req.params.id);
-    if (author) return res.json({message: "Author has been retrieved successfully", data: user});
+    if (author) return res.status(201).json({message: "Author has been retrieved successfully", data: author});
     res.status(404).json({ message: "Author not found" });
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve author", error });
