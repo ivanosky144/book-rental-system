@@ -52,6 +52,28 @@ const Books = () => {
     const [editId, setEditId] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
+    // State for dropdowns/multiselects
+    const [genres, setGenres] = useState([]);
+    const [authors, setAuthors] = useState([]);
+    const [publishers, setPublishers] = useState([]);
+
+    // Fetch genres, authors, publishers for the form
+    useEffect(() => {
+        fetch('http://localhost:3000/api/genres')
+            .then(res => res.json())
+            .then(data => setGenres(Array.isArray(data.data) ? data.data : []));
+        fetch('http://localhost:3000/api/authors')
+            .then(res => res.json())
+            .then(data => setAuthors(Array.isArray(data.data) ? data.data : []));
+        fetch('http://localhost:3000/api/publishers')
+            .then(res => res.json())
+            .then(data => setPublishers(Array.isArray(data.data) ? data.data : []));
+    }, []);
+
+    // Add genre_ids and author_ids to form state
+    const [selectedGenres, setSelectedGenres] = useState([]);
+    const [selectedAuthors, setSelectedAuthors] = useState([]);
+
     // Handle form input changes
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -66,6 +88,11 @@ const Books = () => {
             return;
         }
         let success = false;
+        const payload = {
+            ...form,
+            genre_ids: selectedGenres,
+            author_ids: selectedAuthors,
+        };
         if (isEditing) {
             // Update
             const res = await fetch(`http://localhost:3000/api/books/${editId}`, {
@@ -74,7 +101,7 @@ const Books = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(payload),
             });
             success = res.ok;
         } else {
@@ -85,7 +112,7 @@ const Books = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(payload),
             });
             success = res.ok;
         }
@@ -136,6 +163,8 @@ const Books = () => {
             cover_image_url: book.cover_image_url || '',
             publisher_id: book.publisher_id ? String(book.publisher_id) : '',
         });
+        setSelectedGenres(book.genres ? book.genres.map(g => g.id) : []);
+        setSelectedAuthors(book.authors ? book.authors.map(a => a.id) : []);
         setIsEditing(true);
         setEditId(book.id);
         setShowModal(true);
@@ -157,7 +186,10 @@ const Books = () => {
         setBooks(books.filter(b => b.id !== id));
     };
 
-    // Open modal for adding new book
+    // Multi-step modal state
+    const [modalStep, setModalStep] = useState(1);
+
+    // Reset modal state on open/close
     const handleAddBook = () => {
         setForm({
             title: '',
@@ -168,9 +200,12 @@ const Books = () => {
             cover_image_url: '',
             publisher_id: '',
         });
+        setSelectedGenres([]);
+        setSelectedAuthors([]);
         setIsEditing(false);
         setEditId(null);
         setShowModal(true);
+        setModalStep(1);
     };
 
     return (
@@ -252,94 +287,125 @@ const Books = () => {
                         </button>
                         <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Book' : 'Add New Book'}</h2>
                         <form onSubmit={handleSubmit}>
-                            <input
-                                type="text"
-                                name="title"
-                                placeholder="Title"
-                                value={form.title}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="author"
-                                placeholder="Author"
-                                value={form.author}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="publication_year"
-                                placeholder="Publication Year"
-                                value={form.publication_year}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="isbn"
-                                placeholder="ISBN"
-                                value={form.isbn}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="cover_image_url"
-                                placeholder="Cover Image URL"
-                                value={form.cover_image_url}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="number"
-                                name="publisher_id"
-                                placeholder="Publisher ID"
-                                value={form.publisher_id}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <textarea
-                                name="summary"
-                                placeholder="Summary"
-                                value={form.summary}
-                                onChange={handleChange}
-                                className="block w-full mb-3 p-2 border rounded"
-                                required
-                            />
-                            <button
-                                type="submit"
-                                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 mr-2"
-                            >
-                                {isEditing ? 'Update' : 'Add'}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setIsEditing(false);
-                                    setForm({
-                                        title: '',
-                                        author: '',
-                                        publication_year: '',
-                                        isbn: '',
-                                        summary: '',
-                                        cover_image_url: '',
-                                        publisher_id: '',
-                                    });
-                                    setEditId(null);
-                                    setShowModal(false);
-                                }}
-                                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                            >
-                                Cancel
-                            </button>
+                            {modalStep === 1 && (
+                                <>
+                                    <label className="block mb-2 font-semibold">Select Genres</label>
+                                    <select
+                                        multiple
+                                        value={selectedGenres}
+                                        onChange={e => setSelectedGenres(Array.from(e.target.selectedOptions, o => Number(o.value)))}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    >
+                                        {genres.map(g => (
+                                            <option key={g.id} value={g.id}>{g.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            type="button"
+                                            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
+                                            onClick={() => setModalStep(2)}
+                                            disabled={selectedGenres.length === 0}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                            {modalStep === 2 && (
+                                <>
+                                    <label className="block mb-1 font-semibold">Title</label>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        placeholder="Title"
+                                        value={form.title}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    />
+                                    <label className="block mb-1 font-semibold">Publication Year</label>
+                                    <input
+                                        type="text"
+                                        name="publication_year"
+                                        placeholder="Publication Year"
+                                        value={form.publication_year}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    />
+                                    <label className="block mb-1 font-semibold">ISBN</label>
+                                    <input
+                                        type="text"
+                                        name="isbn"
+                                        placeholder="ISBN"
+                                        value={form.isbn}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    />
+                                    <label className="block mb-1 font-semibold">Cover Image URL</label>
+                                    <input
+                                        type="text"
+                                        name="cover_image_url"
+                                        placeholder="Cover Image URL"
+                                        value={form.cover_image_url}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    />
+                                    <label className="block mb-1 font-semibold">Summary</label>
+                                    <textarea
+                                        name="summary"
+                                        placeholder="Summary"
+                                        value={form.summary}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    />
+                                    <label className="block mb-2 font-semibold">Select Authors</label>
+                                    <select
+                                        multiple
+                                        value={selectedAuthors}
+                                        onChange={e => setSelectedAuthors(Array.from(e.target.selectedOptions, o => Number(o.value)))}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    >
+                                        {authors.map(a => (
+                                            <option key={a.id} value={a.id}>{a.name}</option>
+                                        ))}
+                                    </select>
+                                    <label className="block mb-2 font-semibold">Publisher</label>
+                                    <select
+                                        name="publisher_id"
+                                        value={form.publisher_id}
+                                        onChange={handleChange}
+                                        className="block w-full mb-3 p-2 border rounded"
+                                        required
+                                    >
+                                        <option value="">Select Publisher</option>
+                                        {publishers.map(p => (
+                                            <option key={p.id} value={p.id}>{p.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="flex justify-between gap-2">
+                                        <button
+                                            type="button"
+                                            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                                            onClick={() => setModalStep(1)}
+                                        >
+                                            Back
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
+                                        >
+                                            {isEditing ? 'Update' : 'Add'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </form>
                     </div>
                 </div>
@@ -359,6 +425,7 @@ const Books = () => {
                             <p className="text-gray-600">Year: {book.publication_year}</p>
                             <p className="text-gray-600">ISBN: {book.isbn}</p>
                             <p className="text-gray-600">Publisher ID: {book.publisher_id}</p>
+                            <p className="text-gray-600">Available: {book.available_copies ?? 0} copies</p>
                             <img
                                 src={book.cover_image_url}
                                 alt={book.title}

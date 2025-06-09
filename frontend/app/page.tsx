@@ -96,22 +96,22 @@ export default function Home() {
           </Card.Content>
         </Card>
 
-        {/* Card for Easy Rentals */}
+        {/* Card for Admin Management */}
         <Card>
           <Card.Header>
             <Card.Title className="text-3xl font-semibold mb-2 text-brown-700 pixel-font">
-              Easy Rentals
+              Admin Management
             </Card.Title>
             <Card.Description className="text-xl text-gray-800 mb-4 pixel-font">
-              Rent books online and pick them up at your convenience.
+              Manage genres, authors, publishers, and more as an admin.
             </Card.Description>
           </Card.Header>
           <Card.Content>
             <a
-              href="/rent"
+              href="/management"
               className="text-amber-500 font-medium hover:underline pixel-font"
             >
-              Rent Now
+              Go to Management
             </a>
           </Card.Content>
         </Card>

@@ -49,6 +49,7 @@ export const getAllBooks = async (req, res) => {
     const Publisher = db.Publisher;
     const BookGenre = db.BookGenre;
     const BookAuthor = db.BookAuthor;
+    const BookCopy = db.BookCopy;
 
     // Build query options
     let where = {};
@@ -68,11 +69,36 @@ export const getAllBooks = async (req, res) => {
       include[2].where = { name: { [db.Sequelize.Op.iLike]: `%${genre}%` } };
     }
 
+    // Ambil semua buku
     const books = await Book.findAll({
       where,
       include,
     });
-    res.json({ data: books });
+
+    // Ambil jumlah copy tersedia untuk setiap buku
+    const bookIds = books.map(b => b.id);
+    const copies = await BookCopy.findAll({
+      where: {
+        book_id: bookIds,
+        status: 'available',
+      },
+      attributes: ['book_id', [sequelize.fn('COUNT', sequelize.col('id')), 'available_copies']],
+      group: ['book_id'],
+      raw: true,
+    });
+    const copyMap = {};
+    copies.forEach(c => {
+      copyMap[c.book_id] = parseInt(c.available_copies, 10);
+    });
+
+    // Tambahkan field available_copies ke setiap buku
+    const booksWithCopies = books.map(b => {
+      const book = b.toJSON();
+      book.available_copies = copyMap[b.id] || 0;
+      return book;
+    });
+
+    res.json({ data: booksWithCopies });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

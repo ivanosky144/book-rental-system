@@ -73,6 +73,13 @@ router.get('/test', (req, res) => res.json({ message: 'Router is working' }));
 router.get('/api/books', getAllBooks); // PUBLIC: anyone can view books
 router.get('/api/books/:id', getBookById); // PUBLIC: anyone can view a book by id
 
+router.get('/api/genres', getAllGenres); // PUBLIC
+router.get('/api/genres/:id', getGenreById); // PUBLIC
+router.get('/api/authors', getAllAuthors); // PUBLIC
+router.get('/api/authors/:id', getAuthorById); // PUBLIC
+router.get('/api/publishers', getAllPublishers); // PUBLIC
+router.get('/api/publishers/:id', getPublisherById); // PUBLIC
+
 router.use(authMiddleware); // Protect all routes below this line
 
 router.post('/api/users', createUser);
