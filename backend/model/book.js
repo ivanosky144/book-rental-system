@@ -24,7 +24,7 @@ const bookModel = (sequelize, Sequelize) => {
             allowNull: false,
         },
         cover_image_url: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         publisher_id: {

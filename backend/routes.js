@@ -68,7 +68,12 @@ const router = express.Router();
 router.post('/api/admins/login', adminLogin);
 router.post('/api/admins/register', adminRegister);
 
-router.use(authMiddleware);
+router.get('/test', (req, res) => res.json({ message: 'Router is working' }));
+
+router.get('/api/books', getAllBooks); // PUBLIC: anyone can view books
+router.get('/api/books/:id', getBookById); // PUBLIC: anyone can view a book by id
+
+router.use(authMiddleware); // Protect all routes below this line
 
 router.post('/api/users', createUser);
 router.get('/api/users', getAllUsers);
@@ -83,8 +88,6 @@ router.put('/api/authors/:id', updateAuthor);
 router.delete('/api/authors/:id', deleteAuthor);
 
 router.post('/api/books', createBook);
-router.get('/api/books', getAllBooks);
-router.get('/api/books/:id', getBookById);
 router.put('/api/books/:id', updateBook);
 router.delete('/api/books/:id', deleteBook);
 
