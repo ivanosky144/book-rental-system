@@ -7,7 +7,7 @@ const Books = () => {
     const [isAdmin, setIsAdmin] = useState(false); // State to manage admin status
 
     // Search/filter state
-    const [search, setSearch] = useState({ title: '', genre: '', publisher: '' });
+    const [search, setSearch] = useState({ title: '', genre: '' });
 
     useEffect(() => {
         // Only run on client
@@ -25,7 +25,6 @@ const Books = () => {
         const params = new URLSearchParams();
         if (filters.title) params.append('title', filters.title);
         if (filters.genre) params.append('genre', filters.genre);
-        if (filters.publisher) params.append('publisher', filters.publisher);
         const url = params.toString()
             ? `http://localhost:3000/api/books?${params.toString()}`
             : 'http://localhost:3000/api/books';
@@ -208,6 +207,10 @@ const Books = () => {
         setModalStep(1);
     };
 
+    // State for detail modal
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [detailBook, setDetailBook] = useState(null);
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-200 text-black">
             {/* Books Section */}
@@ -235,20 +238,16 @@ const Books = () => {
                     onChange={e => setSearch(s => ({ ...s, title: e.target.value }))}
                     className="p-2 border rounded w-48"
                 />
-                <input
-                    type="text"
-                    placeholder="Search by genre"
+                <select
                     value={search.genre}
                     onChange={e => setSearch(s => ({ ...s, genre: e.target.value }))}
                     className="p-2 border rounded w-48"
-                />
-                <input
-                    type="text"
-                    placeholder="Search by publisher ID"
-                    value={search.publisher}
-                    onChange={e => setSearch(s => ({ ...s, publisher: e.target.value }))}
-                    className="p-2 border rounded w-48"
-                />
+                >
+                    <option value="">All Genres</option>
+                    {genres.map(g => (
+                        <option key={g.id} value={g.name}>{g.name}</option>
+                    ))}
+                </select>
                 <button
                     type="submit"
                     className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
@@ -257,7 +256,7 @@ const Books = () => {
                 </button>
                 <button
                     type="button"
-                    onClick={() => { setSearch({ title: '', genre: '', publisher: '' }); fetchBooks(); }}
+                    onClick={() => { setSearch({ title: '', genre: '' }); fetchBooks(); }}
                     className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
                 >
                     Reset
@@ -414,42 +413,47 @@ const Books = () => {
             {/* Book Listings Section */}
             <div className="grid gap-8 grid-cols-1 md:grid-cols-3 w-full max-w-4xl">
                 {loading ? (
-    <div className="col-span-full text-center text-lg">Loading...</div>
-) : !books || books.length === 0 ? (
-    <div className="col-span-full text-center text-lg">No books found.</div>
-) : (
-    books.map(book => (
-                        <div key={book.id} className="card bg-white shadow-lg rounded-lg p-6">
-                            <h3 className="text-2xl font-semibold text-gray-800">{book.title}</h3>
-                            <p className="text-gray-600">Author: {book.authorName || book.author || 'Unknown'}</p>
-                            <p className="text-gray-600">Year: {book.publication_year}</p>
-                            <p className="text-gray-600">ISBN: {book.isbn}</p>
-                            <p className="text-gray-600">Publisher ID: {book.publisher_id}</p>
-                            <p className="text-gray-600">Available: {book.available_copies ?? 0} copies</p>
-                            <img
-                                src={book.cover_image_url}
-                                alt={book.title}
-                                className="w-full h-40 object-cover rounded mb-2"
-                            />
-                            <p className="text-gray-700 text-sm mb-2">{book.summary}</p>
-                            <div className="flex gap-2 mt-4">
+                    <div className="col-span-full text-center text-lg">Loading...</div>
+                ) : !books || books.length === 0 ? (
+                    <div className="col-span-full text-center text-lg">No books found.</div>
+                ) : (
+                    books.map(book => (
+                        <div
+                            key={book.id}
+                            className="card bg-white shadow-lg rounded-lg p-6 flex flex-col items-center relative group"
+                            style={{ position: 'relative' }}
+                            onClick={() => { setDetailBook(book); setShowDetailModal(true); }}
+                        >
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-2 text-center">{book.title}</h3>
+                            <div className="w-full h-40 flex items-center justify-center mb-2 overflow-hidden rounded" style={{ maxWidth: 180 }}>
+                                <img
+                                    src={book.cover_image_url}
+                                    alt={book.title}
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
+                            <div className="flex gap-2 mt-2 w-full justify-center opacity-100 group-hover:opacity-100">
                                 {isAdmin && (
                                     <>
                                         <button
-                                            onClick={() => handleEdit(book)}
+                                            onClick={e => { e.stopPropagation(); handleEdit(book); }}
                                             className="text-blue-500 hover:underline"
                                         >
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(book.id)}
+                                            onClick={e => { e.stopPropagation(); handleDelete(book.id); }}
                                             className="text-red-500 hover:underline"
                                         >
                                             Delete
                                         </button>
                                     </>
                                 )}
-                                <a href="/rent" className="text-amber-500 font-medium hover:underline ml-auto">
+                                <a
+                                    href="/rent"
+                                    className="text-amber-500 font-medium hover:underline ml-auto"
+                                    onClick={e => e.stopPropagation()}
+                                >
                                     Rent this Book
                                 </a>
                             </div>
@@ -457,6 +461,33 @@ const Books = () => {
                     ))
                 )}
             </div>
+            {showDetailModal && detailBook && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+                    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md relative">
+                        <button
+                            onClick={() => setShowDetailModal(false)}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+                            aria-label="Close"
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-2xl font-bold mb-4">{detailBook.title}</h2>
+                        <img
+                            src={detailBook.cover_image_url}
+                            alt={detailBook.title}
+                            className="w-full h-40 object-cover rounded mb-4"
+                            style={{ maxWidth: 180 }}
+                        />
+                        <div className="mb-2"><span className="font-semibold">Author:</span> {detailBook.authors && detailBook.authors.length > 0 ? detailBook.authors.map(a => a.name).join(', ') : (detailBook.authorName || detailBook.author || 'Unknown')}</div>
+                        <div className="mb-2"><span className="font-semibold">Year:</span> {detailBook.publication_year}</div>
+                        <div className="mb-2"><span className="font-semibold">ISBN:</span> {detailBook.isbn}</div>
+                        <div className="mb-2"><span className="font-semibold">Publisher ID:</span> {detailBook.publisher_id}</div>
+                        <div className="mb-2"><span className="font-semibold">Genre:</span> {detailBook.genres && detailBook.genres.length > 0 ? detailBook.genres.map(g => g.name).join(', ') : '-'}</div>
+                        <div className="mb-2"><span className="font-semibold">Available Copies:</span> {detailBook.available_copies ?? 0}</div>
+                        <div className="mb-2"><span className="font-semibold">Summary:</span> <br />{detailBook.summary}</div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 };
