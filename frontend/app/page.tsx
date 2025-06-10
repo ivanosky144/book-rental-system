@@ -78,29 +78,35 @@ export default function Home() {
       {/* Feature Cards Section */}
       <div className="grid gap-8 grid-cols-1 md:grid-cols-3 w-full max-w-4xl">
         {/* Card for Browse Collection */}
-        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
-          <div className="text-xl font-normal mb-2">Browse Collection</div>
-          <div className="mb-4">Explore a wide variety of books across genres and authors.</div>
-          <a href="/books" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Browse Books</a>
-        </Card>
-        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
-          <div className="text-xl font-normal mb-2">Admin Management</div>
-          <div className="mb-4">Manage genres, authors, publishers, and more as an admin.</div>
-          <a href="/management" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Management</a>
-        </Card>
-        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
-          <div className="text-xl font-normal mb-2">Your Account</div>
-          <div className="mb-4">Track your rentals, returns, and manage your profile.</div>
-          <a href="/account" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Account</a>
-        </Card>
+        <div className="group transition-transform duration-200 hover:scale-105">
+          <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black transition-colors duration-200 group-hover:border-[#a78bfa]">
+            <div className="text-xl font-bold mb-2 transition-colors duration-200 group-hover:text-[#a78bfa]">Browse Collection</div>
+            <div className="mb-4">Explore a wide variety of books across genres and authors.</div>
+            <a href="/books" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Browse Books</a>
+          </Card>
+        </div>
+        <div className="group transition-transform duration-200 hover:scale-105">
+          <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black transition-colors duration-200 group-hover:border-[#a78bfa]">
+            <div className="text-xl font-bold mb-2 transition-colors duration-200 group-hover:text-[#a78bfa]">Admin Management</div>
+            <div className="mb-4">Manage genres, authors, publishers, and more as an admin.</div>
+            <a href="/management" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Management</a>
+          </Card>
+        </div>
+        <div className="group transition-transform duration-200 hover:scale-105">
+          <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black transition-colors duration-200 group-hover:border-[#a78bfa]">
+            <div className="text-xl font-bold mb-2 transition-colors duration-200 group-hover:text-[#a78bfa]">Your Account</div>
+            <div className="mb-4">Track your rentals, payments, returns, and manage your profile.</div>
+            <a href="/account" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Account</a>
+          </Card>
+        </div>
       </div>
 
       {/* Admin Login Button under the cards */}
       {adminName ? (
         <>
-          <div className="mt-8 text-xl text-teal-700 font-bold pixel-font">Welcome, {adminName}!</div>
+          <div className="mt-8 text-l text-teal-700 font-bold pixel-font">Hello, admin {adminName}!</div>
           <button
-            className="mt-4 px-8 py-3 bg-[#ffffdd] text-black border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#f87559] pixel-font text-xl font-normal transition hover:bg-[#f5bab1] hover:text-black focus:outline-none"
+            className="mt-4 px-4 py-2 bg-[#ffffdd] text-black border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#f87559] pixel-font text-l font-normal transition hover:bg-[#f5bab1] hover:text-black focus:outline-none"
             onClick={() => {
               localStorage.removeItem('token');
               localStorage.removeItem('admin');
@@ -114,7 +120,7 @@ export default function Home() {
         </>
       ) : (
         <button
-          className="mt-8 px-6 py-3 bg-teal-500 text-white rounded pixel-font hover:bg-teal-600"
+          className="mt-8 px-5 py-2 bg-[#d1fae5] text-[#134e4a] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#5eead4] pixel-font text-l font-normal transition hover:bg-[#5eead4] hover:text-black focus:outline-none"
           onClick={() => setShowAdminLogin(true)}
           type="button"
         >
@@ -124,7 +130,7 @@ export default function Home() {
 
       {/* Admin Login Modal */}
       {showAdminLogin && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-sm">
             <h2 className="text-2xl font-bold mb-4 text-teal-600 pixel-font">Admin Login</h2>
             <form onSubmit={handleAdminLogin} className="flex flex-col gap-4">
@@ -146,7 +152,7 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="bg-teal-500 text-white rounded px-4 py-2 hover:bg-teal-600"
+                className="bg-[#d1fae5] text-[#134e4a] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#5eead4] pixel-font text-xl font-normal px-8 py-3 transition hover:bg-[#5eead4] hover:text-black focus:outline-none"
                 disabled={adminLoading}
               >
                 {adminLoading ? "Logging in..." : "Login"}
