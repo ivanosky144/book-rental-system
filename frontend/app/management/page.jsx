@@ -14,8 +14,12 @@ export default function ManagementPage() {
         <Link href="/management/author">
           <button className="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition">Manage Authors</button>
         </Link>
+        <Link href="/management/publisher">
+          <button className="w-full bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition">Manage Publishers</button>
+        </Link>
         {/* Tambahkan link ke fitur management lain di sini */}
       </div>
+     
     </main>
   );
 }

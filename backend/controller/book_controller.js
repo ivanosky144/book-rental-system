@@ -66,7 +66,12 @@ export const getAllBooks = async (req, res) => {
       { model: Genre, as: 'genres', through: { attributes: [] } },
     ];
     if (genre) {
-      include[2].where = { name: { [db.Sequelize.Op.iLike]: `%${genre}%` } };
+      // Jika genre berupa id, filter by id, jika string, filter by name
+      if (!isNaN(Number(genre))) {
+        include[2].where = { id: Number(genre) };
+      } else {
+        include[2].where = { name: { [db.Sequelize.Op.iLike]: `%${genre}%` } };
+      }
     }
 
     // Ambil semua buku
@@ -153,13 +158,33 @@ export const getBookById = async (req, res) => {
 
 export const updateBook = async (req, res) => {
   try {
-    const { title, publication_year, isbn, summary, cover_image_url, publisher_id } = req.body;
+    const { title, publication_year, isbn, summary, cover_image_url, publisher_id, genre_ids, author_ids } = req.body;
     const [updated] = await Book.update(
       { title, publication_year, isbn, summary, cover_image_url, publisher_id },
       { where: { id: req.params.id } }
     );
     if (updated) {
-      const updatedBook = await Book.findByPk(req.params.id);
+      // Update genres and authors relations if provided
+      if (Array.isArray(genre_ids)) {
+        await BookGenre.destroy({ where: { book_id: req.params.id } });
+        await Promise.all(
+          genre_ids.map(id => BookGenre.create({ book_id: req.params.id, genre_id: id }))
+        );
+      }
+      if (Array.isArray(author_ids)) {
+        await BookAuthor.destroy({ where: { book_id: req.params.id } });
+        await Promise.all(
+          author_ids.map(id => BookAuthor.create({ book_id: req.params.id, author_id: id }))
+        );
+      }
+      // Return book with relations
+      const updatedBook = await Book.findByPk(req.params.id, {
+        include: [
+          { model: db.Author, as: 'authors', through: { attributes: [] } },
+          { model: db.Genre, as: 'genres', through: { attributes: [] } },
+          { model: db.Publisher, as: 'publisher' },
+        ],
+      });
       return res.status(200).json({ message: "Book has been updated successfully", data: updatedBook });
     }
     res.status(404).json({ message: "Book not found" });

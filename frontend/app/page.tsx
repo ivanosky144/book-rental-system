@@ -1,5 +1,6 @@
 "use client";
 import { Card } from "./components/card"; // Import Card component
+import './styles/globals.css';
 
 import React, { useState } from "react";
 
@@ -66,7 +67,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-200 text-black">
       {/* Welcome Section */}
       <div className="w-full max-w-3xl text-center mb-12">
-        <h1 className="text-6xl font-extrabold mb-4 text-teal-500 pixel-font">
+        <h1 className="text-6xl font-extrabold mb-4 text-teal-500 pixel-font drop-shadow-[2px_2px_0_#000]">
           Welcome to BookRent
         </h1>
         <p className="text-2xl text-gray-700 pixel-font">
@@ -77,69 +78,40 @@ export default function Home() {
       {/* Feature Cards Section */}
       <div className="grid gap-8 grid-cols-1 md:grid-cols-3 w-full max-w-4xl">
         {/* Card for Browse Collection */}
-        <Card>
-          <Card.Header>
-            <Card.Title className="text-3xl font-semibold mb-2 text-brown-700 pixel-font">
-              Browse Collection
-            </Card.Title>
-            <Card.Description className="text-xl text-gray-800 mb-4 pixel-font">
-              Explore a wide variety of books across genres and authors.
-            </Card.Description>
-          </Card.Header>
-          <Card.Content>
-            <a
-              href="/books"
-              className="text-amber-500 font-medium hover:underline pixel-font"
-            >
-              Browse Books
-            </a>
-          </Card.Content>
+        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
+          <div className="text-xl font-normal mb-2">Browse Collection</div>
+          <div className="mb-4">Explore a wide variety of books across genres and authors.</div>
+          <a href="/books" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Browse Books</a>
         </Card>
-
-        {/* Card for Admin Management */}
-        <Card>
-          <Card.Header>
-            <Card.Title className="text-3xl font-semibold mb-2 text-brown-700 pixel-font">
-              Admin Management
-            </Card.Title>
-            <Card.Description className="text-xl text-gray-800 mb-4 pixel-font">
-              Manage genres, authors, publishers, and more as an admin.
-            </Card.Description>
-          </Card.Header>
-          <Card.Content>
-            <a
-              href="/management"
-              className="text-amber-500 font-medium hover:underline pixel-font"
-            >
-              Go to Management
-            </a>
-          </Card.Content>
+        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
+          <div className="text-xl font-normal mb-2">Admin Management</div>
+          <div className="mb-4">Manage genres, authors, publishers, and more as an admin.</div>
+          <a href="/management" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Management</a>
         </Card>
-
-        {/* Card for Manage Account */}
-        <Card>
-          <Card.Header>
-            <Card.Title className="text-3xl font-semibold mb-2 text-brown-700 pixel-font">
-              Your Account
-            </Card.Title>
-            <Card.Description className="text-xl text-gray-800 mb-4 pixel-font">
-              Track your rentals, returns, and manage your profile.
-            </Card.Description>
-          </Card.Header>
-          <Card.Content>
-            <a
-              href="/account"
-              className="text-amber-500 font-medium hover:underline pixel-font"
-            >
-              Go to Account
-            </a>
-          </Card.Content>
+        <Card className="bg-[#ffffdd] border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#a78bfa] px-8 py-10 flex flex-col items-center pixel-font text-black">
+          <div className="text-xl font-normal mb-2">Your Account</div>
+          <div className="mb-4">Track your rentals, returns, and manage your profile.</div>
+          <a href="/account" className="font-bold underline underline-offset-2 decoration-[#a78bfa] hover:text-[#a78bfa]">Go to Account</a>
         </Card>
       </div>
 
       {/* Admin Login Button under the cards */}
       {adminName ? (
-        <div className="mt-8 text-xl text-teal-700 font-bold pixel-font">Welcome, {adminName}!</div>
+        <>
+          <div className="mt-8 text-xl text-teal-700 font-bold pixel-font">Welcome, {adminName}!</div>
+          <button
+            className="mt-4 px-8 py-3 bg-[#ffffdd] text-black border-2 border-black rounded-[6px] shadow-[4px_4px_0_0_#f87559] pixel-font text-xl font-normal transition hover:bg-[#f5bab1] hover:text-black focus:outline-none"
+            onClick={() => {
+              localStorage.removeItem('token');
+              localStorage.removeItem('admin');
+              setAdminName(null);
+              window.location.reload();
+            }}
+            type="button"
+          >
+            Logout
+          </button>
+        </>
       ) : (
         <button
           className="mt-8 px-6 py-3 bg-teal-500 text-white rounded pixel-font hover:bg-teal-600"

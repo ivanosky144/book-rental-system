@@ -24,7 +24,13 @@ const Books = () => {
         setLoading(true);
         const params = new URLSearchParams();
         if (filters.title) params.append('title', filters.title);
-        if (filters.genre) params.append('genre', filters.genre);
+        if (filters.genre) {
+            // Cari genre id dari nama genre
+            const selectedGenre = genres.find(g => g.name === filters.genre);
+            if (selectedGenre) {
+                params.append('genre', selectedGenre.id);
+            }
+        }
         const url = params.toString()
             ? `http://localhost:3000/api/books?${params.toString()}`
             : 'http://localhost:3000/api/books';
@@ -72,6 +78,9 @@ const Books = () => {
     // Add genre_ids and author_ids to form state
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [selectedAuthors, setSelectedAuthors] = useState([]);
+    // State for author/publisher search input
+    const [authorSearch, setAuthorSearch] = useState("");
+    const [publisherSearch, setPublisherSearch] = useState("");
 
     // Handle form input changes
     const handleChange = (e) => {
@@ -240,7 +249,8 @@ const Books = () => {
                 />
                 <select
                     value={search.genre}
-                    onChange={e => setSearch(s => ({ ...s, genre: e.target.value }))}
+                    onChange={e => setSearch(s => ({ ...s, genre: e.target.value }))
+                    }
                     className="p-2 border rounded w-48"
                 >
                     <option value="">All Genres</option>
@@ -363,31 +373,84 @@ const Books = () => {
                                         className="block w-full mb-3 p-2 border rounded"
                                         required
                                     />
-                                    <label className="block mb-2 font-semibold">Select Authors</label>
-                                    <select
-                                        multiple
-                                        value={selectedAuthors}
-                                        onChange={e => setSelectedAuthors(Array.from(e.target.selectedOptions, o => Number(o.value)))}
-                                        className="block w-full mb-3 p-2 border rounded"
-                                        required
-                                    >
-                                        {authors.map(a => (
-                                            <option key={a.id} value={a.id}>{a.name}</option>
-                                        ))}
-                                    </select>
+                                    {/* Author Searchable Dropdown */}
+                                    <label className="block mb-2 font-semibold">Select Author</label>
+                                    <div className="relative mb-3">
+                                        <input
+                                            type="text"
+                                            placeholder="Type to search author"
+                                            value={
+                                                selectedAuthors.length > 0
+                                                    ? (authors.find(a => a.id === selectedAuthors[0])?.name || authorSearch || '')
+                                                    : authorSearch || ''
+                                            }
+                                            onChange={e => {
+                                                setAuthorSearch(e.target.value);
+                                                setSelectedAuthors([]);
+                                            }}
+                                            className="block w-full p-2 border rounded"
+                                            autoComplete="off"
+                                        />
+                                        {authorSearch && (
+                                            <ul className="absolute z-10 bg-white border w-full max-h-40 overflow-y-auto rounded shadow">
+                                                {authors.filter(a => a.name.toLowerCase().includes(authorSearch.toLowerCase())).length === 0 ? (
+                                                    <li className="p-2 text-gray-500">No authors found</li>
+                                                ) : (
+                                                    authors.filter(a => a.name.toLowerCase().includes(authorSearch.toLowerCase())).map(a => (
+                                                        <li
+                                                            key={a.id}
+                                                            className="p-2 hover:bg-teal-100 cursor-pointer"
+                                                            onClick={() => {
+                                                                setSelectedAuthors([a.id]);
+                                                                setAuthorSearch('');
+                                                            }}
+                                                        >
+                                                            {a.name}
+                                                        </li>
+                                                    ))
+                                                )}
+                                            </ul>
+                                        )}
+                                    </div>
+                                    {/* Publisher Searchable Dropdown */}
                                     <label className="block mb-2 font-semibold">Publisher</label>
-                                    <select
-                                        name="publisher_id"
-                                        value={form.publisher_id}
-                                        onChange={handleChange}
-                                        className="block w-full mb-3 p-2 border rounded"
-                                        required
-                                    >
-                                        <option value="">Select Publisher</option>
-                                        {publishers.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
+                                    <div className="relative mb-3">
+                                        <input
+                                            type="text"
+                                            placeholder="Type to search publisher"
+                                            value={
+                                                form.publisher_id
+                                                    ? (publishers.find(p => String(p.id) === String(form.publisher_id))?.name || publisherSearch || '')
+                                                    : publisherSearch || ''
+                                            }
+                                            onChange={e => {
+                                                setPublisherSearch(e.target.value);
+                                                setForm(f => ({ ...f, publisher_id: '' }));
+                                            }}
+                                            className="block w-full p-2 border rounded"
+                                            autoComplete="off"
+                                        />
+                                        {publisherSearch && (
+                                            <ul className="absolute z-10 bg-white border w-full max-h-40 overflow-y-auto rounded shadow">
+                                                {publishers.filter(p => p.name.toLowerCase().includes(publisherSearch.toLowerCase())).length === 0 ? (
+                                                    <li className="p-2 text-gray-500">No publishers found</li>
+                                                ) : (
+                                                    publishers.filter(p => p.name.toLowerCase().includes(publisherSearch.toLowerCase())).map(p => (
+                                                        <li
+                                                            key={p.id}
+                                                            className="p-2 hover:bg-teal-100 cursor-pointer"
+                                                            onClick={() => {
+                                                                setForm(f => ({ ...f, publisher_id: String(p.id) }));
+                                                                setPublisherSearch('');
+                                                            }}
+                                                        >
+                                                            {p.name}
+                                                        </li>
+                                                    ))
+                                                )}
+                                            </ul>
+                                        )}
+                                    </div>
                                     <div className="flex justify-between gap-2">
                                         <button
                                             type="button"
@@ -420,30 +483,35 @@ const Books = () => {
                     books.map(book => (
                         <div
                             key={book.id}
-                            className="card bg-white shadow-lg rounded-lg p-6 flex flex-col items-center relative group"
-                            style={{ position: 'relative' }}
+                            className="bg-white shadow-lg rounded-xl flex flex-col items-center p-6 relative group transition-all duration-200 hover:shadow-2xl min-h-[370px] max-w-xs mx-auto w-full"
+                            style={{ cursor: 'pointer' }}
                             onClick={() => { setDetailBook(book); setShowDetailModal(true); }}
                         >
-                            <h3 className="text-2xl font-semibold text-gray-800 mb-2 text-center">{book.title}</h3>
-                            <div className="w-full h-40 flex items-center justify-center mb-2 overflow-hidden rounded" style={{ maxWidth: 180 }}>
-                                <img
-                                    src={book.cover_image_url}
-                                    alt={book.title}
-                                    className="object-cover w-full h-full"
-                                />
+                            <div className="flex flex-col items-center w-full">
+                                <div className="w-[160px] h-[220px] flex items-center justify-center mb-4 overflow-hidden rounded border border-gray-200 bg-gray-50">
+                                    <img
+                                        src={book.cover_image_url}
+                                        alt={book.title}
+                                        className="object-cover w-full h-full"
+                                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                                    />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-800 text-center mb-4 min-h-[56px] flex items-center justify-center leading-tight break-words">
+                                    {book.title}
+                                </h3>
                             </div>
-                            <div className="flex gap-2 mt-2 w-full justify-center opacity-100 group-hover:opacity-100">
+                            <div className="flex flex-row gap-4 mt-auto w-full justify-center pt-2 border-t border-gray-100">
                                 {isAdmin && (
                                     <>
                                         <button
                                             onClick={e => { e.stopPropagation(); handleEdit(book); }}
-                                            className="text-blue-500 hover:underline"
+                                            className="text-blue-600 font-semibold hover:underline focus:outline-none"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={e => { e.stopPropagation(); handleDelete(book.id); }}
-                                            className="text-red-500 hover:underline"
+                                            className="text-red-600 font-semibold hover:underline focus:outline-none"
                                         >
                                             Delete
                                         </button>
@@ -451,10 +519,10 @@ const Books = () => {
                                 )}
                                 <a
                                     href="/rent"
-                                    className="text-amber-500 font-medium hover:underline ml-auto"
+                                    className="text-amber-600 font-semibold hover:underline ml-2 focus:outline-none"
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    Rent this Book
+                                    Rent
                                 </a>
                             </div>
                         </div>
