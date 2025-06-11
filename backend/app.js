@@ -22,11 +22,6 @@ db.sequelize.authenticate()
     console.log('✅ Connected to SQL database.');
     return db.sequelize.sync();
   })
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    });
-  })
   .catch((error) => {
     console.error('❌ Failed to connect to the SQL database:', error);
   });
