@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import db from './models/index.js'; 
 import dotenv from 'dotenv';
 import routes from './routes.js';
@@ -8,10 +7,13 @@ import { swaggerUi, swaggerSpec } from './swagger.js';
 dotenv.config();
 
 const app = express();
-app.use(bodyParser.json());
+
+import cors from 'cors';
+app.use(cors());
+app.use(express.json()); 
+app.use(routes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(routes);  
 
 const PORT = process.env.PORT || 3000;
 

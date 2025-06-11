@@ -53,4 +53,21 @@ db.Admin = adminModel(sequelize, DataTypes);
 db.BookGenre = bookGenreModel(sequelize, DataTypes);
 db.BookAuthor = bookAuthorModel(sequelize, DataTypes);
 
+// Associations for Book
+// Book belongs to Publisher
+if (db.Book && db.Publisher) {
+  db.Book.belongsTo(db.Publisher, { foreignKey: 'publisher_id', as: 'publisher' });
+  db.Publisher.hasMany(db.Book, { foreignKey: 'publisher_id', as: 'books' });
+}
+// Book belongsToMany Genre
+if (db.Book && db.Genre && db.BookGenre) {
+  db.Book.belongsToMany(db.Genre, { through: db.BookGenre, foreignKey: 'book_id', otherKey: 'genre_id', as: 'genres' });
+  db.Genre.belongsToMany(db.Book, { through: db.BookGenre, foreignKey: 'genre_id', otherKey: 'book_id', as: 'books' });
+}
+// Book belongsToMany Author
+if (db.Book && db.Author && db.BookAuthor) {
+  db.Book.belongsToMany(db.Author, { through: db.BookAuthor, foreignKey: 'book_id', otherKey: 'author_id', as: 'authors' });
+  db.Author.belongsToMany(db.Book, { through: db.BookAuthor, foreignKey: 'author_id', otherKey: 'book_id', as: 'books' });
+}
+
 export default db;

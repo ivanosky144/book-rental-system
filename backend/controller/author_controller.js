@@ -20,6 +20,8 @@ export const getAllAuthors = async (req, res) => {
       SELECT 
         a.id,
         a.name,
+        a.bio,
+        a.nationality,
         a.created_at AS "createdAt",
         a.updated_at AS "updatedAt",
         CAST(COUNT(ba.book_id) AS INTEGER) AS book_count
