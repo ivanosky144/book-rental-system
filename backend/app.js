@@ -15,7 +15,10 @@ app.use(routes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const PORT = process.env.PORT || 3000;
+app.get('/', (req, res) => {
+  console.log('📥 Received request on root route (/)');
+  res.send('📚 Book Rental API is running');
+});
 
 db.sequelize.authenticate()
   .then(() => {
