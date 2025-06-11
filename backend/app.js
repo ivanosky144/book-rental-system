@@ -30,3 +30,5 @@ db.sequelize.authenticate()
   .catch((error) => {
     console.error('❌ Failed to connect to the SQL database:', error);
   });
+
+export default app;
