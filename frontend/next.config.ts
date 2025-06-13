@@ -1,13 +1,16 @@
 import type { NextConfig } from "next";
-import apiURI from "./app/api/config";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  trailingSlash: true,
+
   async rewrites() {
     return [
-      {
-        source: '/api/:path*',
-        destination: `${apiURI}api/:path*`,
-      },
+      // You can keep this if you need, or omit if not applicable
+      // {
+      //   source: "/api/:path*",
+      //   destination: `${apiURI}api/:path*`,
+      // },
     ];
   },
 };
