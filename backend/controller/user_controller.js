@@ -1,4 +1,5 @@
 import db from '../models/index.js';
+import bcrypt from 'bcrypt';
   
 const User = db.User;
 
@@ -56,5 +57,40 @@ export const deleteUser = async (req, res) => {
     res.status(404).json({ message: "User not found" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete user", error });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    // If passwords are hashed, use bcrypt.compare. If not, use plain comparison.
+    let match = false;
+    if (user.password && (user.password.startsWith('$2b$') || user.password.startsWith('$2a$'))) {
+      match = await bcrypt.compare(password, user.password);
+    } else {
+      match = password === user.password;
+    }
+    if (!match) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    // Do not return password field
+    let userData;
+    if (typeof user.toJSON === 'function') {
+      const { password: _, ...rest } = user.toJSON();
+      userData = rest;
+    } else {
+      const { password: _, ...rest } = user;
+      userData = rest;
+    }
+    res.status(200).json({ message: 'Login successful', user: userData });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to login', error });
   }
 };

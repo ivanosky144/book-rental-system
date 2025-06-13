@@ -4,7 +4,8 @@ import {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  loginUser
 } from './controller/user_controller.js';
 import {
   createAuthor,
@@ -80,6 +81,33 @@ router.get('/api/authors/:id', getAuthorById); // PUBLIC
 router.get('/api/publishers', getAllPublishers); // PUBLIC
 router.get('/api/publishers/:id', getPublisherById); // PUBLIC
 
+// Make rentals PUBLIC (no auth required)
+router.post('/api/rentals', createRental);
+router.get('/api/rentals', getAllRentals);
+router.get('/api/rentals/:id', getRentalById);
+router.put('/api/rentals/:id', updateRental);
+router.delete('/api/rentals/:id', deleteRental);
+
+// PUBLIC: Get available book copy for a book
+router.get('/api/book-copies/available', async (req, res) => {
+  try {
+    const db = req.app.get('models') || (await import('./models/index.js')).default;
+    const BookCopy = db.BookCopy;
+    const { book_id } = req.query;
+    if (!book_id) return res.status(400).json({ message: 'book_id is required' });
+    const copy = await BookCopy.findOne({ where: { book_id, status: 'available' } });
+    if (!copy) return res.status(404).json({ message: 'No available copy found' });
+    res.json({ data: copy });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch available book copy', error: err.message });
+  }
+});
+
+// PUBLIC: Member login
+router.post('/api/users/login', loginUser);
+// PUBLIC: Get book copy by id
+router.get('/api/book-copies/:id', getBookCopyById);
+
 router.use(authMiddleware); // Protect all routes below this line
 
 router.post('/api/users', createUser);
@@ -103,12 +131,6 @@ router.get('/api/reservations', getAllReservations);
 router.get('/api/reservations/:id', getReservationById);
 router.put('/api/reservations/:id', updateReservation);
 router.delete('/api/reservations/:id', deleteReservation);
-
-router.post('/api/rentals', createRental);
-router.get('/api/rentals', getAllRentals);
-router.get('/api/rentals/:id', getRentalById);
-router.put('/api/rentals/:id', updateRental);
-router.delete('/api/rentals/:id', deleteRental);
 
 router.post('/api/book-copies', createBookCopy);
 router.get('/api/book-copies', getAllBookCopies);

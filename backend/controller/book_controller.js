@@ -5,6 +5,7 @@ const BookGenre = db.BookGenre;
 const BookAuthor = db.BookAuthor;
 const sequelize = db.sequelize;
 
+
 export const createBook = async (req, res) => {
   try {
     const { title, publication_year, isbn, summary, cover_image_url, publisher_id, genre_ids, author_ids } = req.body;

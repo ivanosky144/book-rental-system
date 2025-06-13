@@ -25,7 +25,7 @@ const rentalModel = (sequelize, Sequelize) => {
         },
         return_date: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true, // allow null for return_date
         },
         status: {
             type: DataTypes.ENUM("active", "completed", "overdue"),

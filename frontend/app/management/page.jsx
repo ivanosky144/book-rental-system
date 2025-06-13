@@ -5,6 +5,7 @@ const managementLinks = [
   { href: "/management/book-copy", label: "Manage Book Copies" },
   { href: "/management/author", label: "Manage Authors" },
   { href: "/management/publisher", label: "Manage Publishers" },
+  { href: "/management/member", label: "Manage Members" },
   // Tambahkan link ke fitur management lain di sini
 ];
 
