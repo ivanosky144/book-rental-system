@@ -29,4 +29,5 @@ db.sequelize.authenticate()
     console.error('❌ Failed to connect to the SQL database:', error);
   });
 
+
 export default app;
