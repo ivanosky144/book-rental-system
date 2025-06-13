@@ -58,6 +58,7 @@ export default function Home() {
         setAdminError(data.message || "Invalid credentials");
       }
     } catch (err) {
+      console.error("[Login] - network error:", err);
       setAdminError("Network error");
     }
     setAdminLoading(false);
