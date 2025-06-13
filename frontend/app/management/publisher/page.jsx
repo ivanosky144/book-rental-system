@@ -11,7 +11,7 @@ export default function PublisherManagement() {
   // Fetch publishers from backend
   const fetchPublishers = () => {
     setLoading(true);
-    fetch("http://localhost:3000/api/publishers")
+    fetch(`${apiURI}api/publishers`)
       .then((res) => res.json())
       .then((data) => setPublishers(Array.isArray(data.data) ? data.data : []))
       .finally(() => setLoading(false));
@@ -34,7 +34,7 @@ export default function PublisherManagement() {
     }
     let success = false;
     if (isEditing) {
-      const res = await fetch(`http://localhost:3000/api/publishers/${editId}`, {
+      const res = await fetch(`${apiURI}api/publishers/${editId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export default function PublisherManagement() {
       }
       success = res.ok;
     } else {
-      const res = await fetch("http://localhost:3000/api/publishers", {
+      const res = await fetch(`${apiURI}api/publishers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export default function PublisherManagement() {
       alert("You must be logged in as admin to delete publishers.");
       return;
     }
-    await fetch(`http://localhost:3000/api/publishers/${id}`, {
+    await fetch(`${apiURI}api/publishers/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

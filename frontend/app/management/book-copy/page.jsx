@@ -10,7 +10,7 @@ export default function BookCopyManagement() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/api/books")
+    fetch(`${apiURI}api/books`)
       .then((res) => res.json())
       .then((data) => setBooks(Array.isArray(data.data) ? data.data : []))
       .finally(() => setLoading(false));
@@ -18,7 +18,7 @@ export default function BookCopyManagement() {
 
   const refreshBooks = () => {
     setLoading(true);
-    fetch("http://localhost:3000/api/books")
+    fetch(`${apiURI}api/books`)
       .then((res) => res.json())
       .then((data) => setBooks(Array.isArray(data.data) ? data.data : []))
       .finally(() => setLoading(false));
@@ -44,7 +44,7 @@ export default function BookCopyManagement() {
     }
     if (diff > 0) {
       for (let i = 0; i < diff; i++) {
-        await fetch("http://localhost:3000/api/book-copies", {
+        await fetch(`${apiURI}api/book-copies`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -54,14 +54,14 @@ export default function BookCopyManagement() {
         });
       }
     } else if (diff < 0) {
-      const res = await fetch(`http://localhost:3000/api/book-copies`);
+      const res = await fetch(`${apiURI}api/book-copies`);
       const data = await res.json();
       const availableCopies = (Array.isArray(data.data) ? data.data : []).filter(
         (c) => c.book_id === editBook.id && c.status === "available"
       );
       const toDelete = availableCopies.slice(0, Math.abs(diff));
       for (const copy of toDelete) {
-        await fetch(`http://localhost:3000/api/book-copies/${copy.id}`, {
+        await fetch(`${apiURI}api/book-copies/${copy.id}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
         });

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import apiURI from "../../api/config";
 
 export default function AuthorManagement() {
   const [authors, setAuthors] = useState([]);
@@ -11,7 +12,7 @@ export default function AuthorManagement() {
   // Fetch authors from backend
   const fetchAuthors = () => {
     setLoading(true);
-    fetch("http://localhost:3000/api/authors")
+    fetch(`${apiURI}api/authors`)
       .then((res) => res.json())
       .then((data) => setAuthors(Array.isArray(data.data) ? data.data : []))
       .finally(() => setLoading(false));
@@ -34,7 +35,7 @@ export default function AuthorManagement() {
     }
     let success = false;
     if (isEditing) {
-      const res = await fetch(`http://localhost:3000/api/authors/${editId}`, {
+      const res = await fetch(`${apiURI}api/authors/${editId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +49,7 @@ export default function AuthorManagement() {
       }
       success = res.ok;
     } else {
-      const res = await fetch("http://localhost:3000/api/authors", {
+      const res = await fetch(`${apiURI}api/authors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export default function AuthorManagement() {
       alert("You must be logged in as admin to delete authors.");
       return;
     }
-    await fetch(`http://localhost:3000/api/authors/${id}`, {
+    await fetch(`${apiURI}api/authors/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

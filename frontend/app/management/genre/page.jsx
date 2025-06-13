@@ -11,7 +11,7 @@ export default function GenreManagementPage() {
   // Fetch genres
   const fetchGenres = () => {
     setLoading(true);
-    fetch("http://localhost:3000/api/genres")
+    fetch(`${apiURI}api/genres`)
       .then((res) => res.json())
       .then((data) => {
         setGenres(Array.isArray(data.data) ? data.data : []);
@@ -29,7 +29,7 @@ export default function GenreManagementPage() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return alert("Admin only!");
-    const res = await fetch("http://localhost:3000/api/genres", {
+    const res = await fetch(`${apiURI}api/genres`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export default function GenreManagementPage() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) return alert("Admin only!");
-    const res = await fetch(`http://localhost:3000/api/genres/${editId}`, {
+    const res = await fetch(`${apiURI}api/genres/${editId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export default function GenreManagementPage() {
     if (!window.confirm("Delete this genre?")) return;
     const token = localStorage.getItem("token");
     if (!token) return alert("Admin only!");
-    const res = await fetch(`http://localhost:3000/api/genres/${id}`, {
+    const res = await fetch(`${apiURI}api/genres/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

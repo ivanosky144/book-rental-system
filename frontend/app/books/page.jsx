@@ -32,8 +32,8 @@ const Books = () => {
             }
         }
         const url = params.toString()
-            ? `http://localhost:3000/api/books?${params.toString()}`
-            : 'http://localhost:3000/api/books';
+            ? `${apiURI}api/books?${params.toString()}`
+            : `${apiURI}api/books`;
         fetch(url)
             .then(res => res.json())
             .then(data => {
@@ -64,13 +64,13 @@ const Books = () => {
 
     // Fetch genres, authors, publishers for the form
     useEffect(() => {
-        fetch('http://localhost:3000/api/genres')
+        fetch(`${apiURI}api/genres`)
             .then(res => res.json())
             .then(data => setGenres(Array.isArray(data.data) ? data.data : []));
-        fetch('http://localhost:3000/api/authors')
+        fetch(`${apiURI}api/authors`)
             .then(res => res.json())
             .then(data => setAuthors(Array.isArray(data.data) ? data.data : []));
-        fetch('http://localhost:3000/api/publishers')
+        fetch(`${apiURI}api/publishers`)
             .then(res => res.json())
             .then(data => setPublishers(Array.isArray(data.data) ? data.data : []));
     }, []);
@@ -100,7 +100,7 @@ const Books = () => {
         };
         if (isEditing) {
             // Update
-            const res = await fetch(`http://localhost:3000/api/books/${editId}`, {
+            const res = await fetch(`${apiURI}api/books/${editId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const Books = () => {
             success = res.ok;
         } else {
             // Create
-            const res = await fetch('http://localhost:3000/api/books', {
+            const res = await fetch(`${apiURI}api/books`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ const Books = () => {
             alert('You must be logged in as admin to delete books.');
             return;
         }
-        await fetch(`http://localhost:3000/api/books/${id}`, {
+        await fetch(`${apiURI}api/books/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,

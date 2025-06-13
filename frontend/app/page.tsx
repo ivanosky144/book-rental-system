@@ -1,4 +1,5 @@
 "use client";
+import apiURI from "./api/config";
 import { Card } from "./components/card"; // Import Card component
 import './styles/globals.css';
 
@@ -37,7 +38,7 @@ export default function Home() {
     setAdminLoading(true);
     setAdminError(null);
     try {
-      const response = await fetch("http://localhost:3000/api/admins/login", {
+      const response = await fetch(`${apiURI}api/admins/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
