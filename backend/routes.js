@@ -114,20 +114,9 @@ router.get('/api/book-copies/:id', getBookCopyById);
 
 router.use(authMiddleware); // Protect all routes below this line
 
-router.get('/api/users', getAllUsers);
-router.get('/api/users/:id', getUserById);
-router.put('/api/users/:id', updateUser);
-router.delete('/api/users/:id', deleteUser);
-
-router.post('/api/authors', createAuthor);
 router.get('/api/authors', getAllAuthors);
 router.get('/api/authors/:id', getAuthorById);
-router.put('/api/authors/:id', updateAuthor);
-router.delete('/api/authors/:id', deleteAuthor);
 
-router.post('/api/books', createBook);
-router.put('/api/books/:id', updateBook);
-router.delete('/api/books/:id', deleteBook);
 
 router.post('/api/reservations', createReservation);
 router.get('/api/reservations', getAllReservations);
@@ -135,23 +124,14 @@ router.get('/api/reservations/:id', getReservationById);
 router.put('/api/reservations/:id', updateReservation);
 router.delete('/api/reservations/:id', deleteReservation);
 
-router.post('/api/book-copies', createBookCopy);
 router.get('/api/book-copies', getAllBookCopies);
 router.get('/api/book-copies/:id', getBookCopyById);
-router.put('/api/book-copies/:id', updateBookCopy);
-router.delete('/api/book-copies/:id', deleteBookCopy);
 
-router.post('/api/genres', createGenre);
 router.get('/api/genres', getAllGenres);
 router.get('/api/genres/:id', getGenreById);
-router.put('/api/genres/:id', updateGenre);
-router.delete('/api/genres/:id', deleteGenre);
 
-router.post('/api/publishers', createPublisher);
 router.get('/api/publishers', getAllPublishers);
 router.get('/api/publishers/:id', getPublisherById);
-router.put('/api/publishers/:id', updatePublisher);
-router.delete('/api/publishers/:id', deletePublisher);
 
 
 export default router;
