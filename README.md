@@ -1,8 +1,20 @@
+# BookRent: One Book at a Time -- Rent and Expand Your Mind
+You can access the web app with this url:
+```
+https://book-rental-system-client.vercel.app/
+```
+
+You can access the api with this url:
+```
+https://book-rental-system-api.vercel.app/
+```
+
 ## Backend Development Process
 
-# Here's the latest API documentation:
+### Here's the latest API documentation:
+https://book-rental-system-api.vercel.app/api/api-docs
 
-# You can start the development process by running these commands:
+### You can start the development process by running these commands:
 
 1. Installing dependencies
 ```
@@ -25,6 +37,8 @@ npm dev
 ```
 
 ## Frontend Development Process
+
+### You can start the development process by running these commands:
 
 1. Installing dependencies
 ```

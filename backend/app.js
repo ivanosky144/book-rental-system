@@ -10,15 +10,17 @@ const app = express();
 
 import cors from 'cors';
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/', (req, res) => {
+  console.log('📥 Received request on root route (/)');
+  res.send('📚 Book Rental API is running');
+});
+
+
 app.use(cors());
 app.use(express.json()); 
 app.use(routes);
 
 
-app.get('/', (req, res) => {
-  console.log('📥 Received request on root route (/)');
-  res.send('📚 Book Rental API is running');
-});
 
 db.sequelize.authenticate()
   .then(() => {
