@@ -5,7 +5,6 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-  loginUser
 } from './controller/user_controller.js';
 import {
   createAuthor,
@@ -59,7 +58,11 @@ import {
 import {
   adminLogin,
   adminRegister
-} from './controller/auth_controller.js';
+} from './controller/admin_auth_controller.js';
+import {
+  loginUser,
+  registerUser
+} from './controller/user_auth_controller.js';
 import authMiddleware from './middleware/auth_middleware.js';
 
 
@@ -105,12 +108,12 @@ router.get('/api/book-copies/available', async (req, res) => {
 
 // PUBLIC: Member login
 router.post('/api/users/login', loginUser);
+router.post('/api/users/register', registerUser);
 // PUBLIC: Get book copy by id
 router.get('/api/book-copies/:id', getBookCopyById);
 
 router.use(authMiddleware); // Protect all routes below this line
 
-router.post('/api/users', createUser);
 router.get('/api/users', getAllUsers);
 router.get('/api/users/:id', getUserById);
 router.put('/api/users/:id', updateUser);

@@ -1,12 +1,12 @@
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: Admin authentication
+ *   name: User Auth
+ *   description: User authentication
  * 
- * /api/admins/register:
+ * /api/users/register:
  *   post:
- *     summary: Register a new admin
+ *     summary: Register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -37,7 +37,7 @@
  *                 example: "mypassword123"
  *     responses:
  *       201:
- *         description: Admin registered successfully
+ *         description: User registered successfully
  *         content:
  *           application/json:
  *             schema:
@@ -61,9 +61,9 @@
  *       500:
  *         description: Server error
  * 
- * /api/admins/login:
+ * /api/users/login:
  *   post:
- *     summary: Admin login
+ *     summary: User login
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -84,7 +84,7 @@
  *                 example: mypassword123
  *     responses:
  *       200:
- *         description: Admin logged in successfully
+ *         description: User logged in successfully
  *         content:
  *           application/json:
  *             schema:
@@ -94,7 +94,7 @@
  *                   type: string
  *                 token:
  *                   type: string
- *                 admin:
+ *                 user:
  *                   type: object
  *                   properties:
  *                     id:
