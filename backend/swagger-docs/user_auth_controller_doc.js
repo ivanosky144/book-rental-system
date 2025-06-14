@@ -7,7 +7,7 @@
  * /api/users/register:
  *   post:
  *     summary: Register a new user
- *     tags: [Auth]
+ *     tags: [User Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +64,7 @@
  * /api/users/login:
  *   post:
  *     summary: User login
- *     tags: [Auth]
+ *     tags: [User Auth]
  *     requestBody:
  *       required: true
  *       content:

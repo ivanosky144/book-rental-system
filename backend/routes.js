@@ -63,33 +63,30 @@ import {
   loginUser,
   registerUser
 } from './controller/user_auth_controller.js';
-import authMiddleware from './middleware/auth_middleware.js';
-
-
+import authUserMiddleware from './middleware/auth_user_middleware.js';
+import authAdminMiddleware from './middleware/auth_admin_middleware.js';
 
 const router = express.Router();
 
-router.post('/api/admins/login', adminLogin);
-router.post('/api/admins/register', adminRegister);
 
-router.get('/test', (req, res) => res.json({ message: 'Router is working' }));
-
+// PUBLIC ROUTES
 router.get('/api/books', getAllBooks); // PUBLIC: anyone can view books
 router.get('/api/books/:id', getBookById); // PUBLIC: anyone can view a book by id
-
 router.get('/api/genres', getAllGenres); // PUBLIC
 router.get('/api/genres/:id', getGenreById); // PUBLIC
 router.get('/api/authors', getAllAuthors); // PUBLIC
 router.get('/api/authors/:id', getAuthorById); // PUBLIC
 router.get('/api/publishers', getAllPublishers); // PUBLIC
 router.get('/api/publishers/:id', getPublisherById); // PUBLIC
+// PUBLIC: Member authentication
+router.post('/api/users/login', loginUser);
+router.post('/api/users/register', registerUser);
+// PUBLIC: Admin authentication
+router.post('/api/admins/login', adminLogin);
+router.post('/api/admins/register', adminRegister);
+router.get('/api/book-copies/:id', getBookCopyById);
 
-// Make rentals PUBLIC (no auth required)
-router.post('/api/rentals', createRental);
-router.get('/api/rentals', getAllRentals);
-router.get('/api/rentals/:id', getRentalById);
-router.put('/api/rentals/:id', updateRental);
-router.delete('/api/rentals/:id', deleteRental);
+router.get('/test', (req, res) => res.json({ message: 'Router is working' }));
 
 // PUBLIC: Get available book copy for a book
 router.get('/api/book-copies/available', async (req, res) => {
@@ -106,13 +103,48 @@ router.get('/api/book-copies/available', async (req, res) => {
   }
 });
 
-// PUBLIC: Member login
-router.post('/api/users/login', loginUser);
-router.post('/api/users/register', registerUser);
-// PUBLIC: Get book copy by id
-router.get('/api/book-copies/:id', getBookCopyById);
+// ADMIN ONLY ROUTES
+router.use(authAdminMiddleware);
+router.post('/api/users', createUser);
+router.get('/api/users', getAllUsers);
+router.get('/api/users/:id', getUserById);
+router.put('/api/users/:id', updateUser);
+router.delete('/api/users/:id', deleteUser);
 
-router.use(authMiddleware); // Protect all routes below this line
+router.post('/api/books', createBook);
+router.put('/api/books/:id', updateBook);
+router.delete('/api/books/:id', deleteBook);
+
+router.post('/api/authors', createAuthor);
+router.put('/api/authors/:id', updateAuthor);
+router.delete('/api/authors/:id', deleteAuthor);
+
+router.post('/api/genres', createGenre);
+router.put('/api/genres/:id', updateGenre);
+router.delete('/api/genres/:id', deleteGenre);
+
+router.post('/api/publishers', createPublisher);
+router.put('/api/publishers/:id', updatePublisher);
+router.delete('/api/publishers/:id', deletePublisher);
+
+router.post('/api/book-copies', createBookCopy);
+router.put('/api/book-copies/:id', updateBookCopy);
+router.delete('/api/book-copies/:id', deleteBookCopy);
+
+router.put('/api/reservations/:id', updateReservation);
+router.delete('/api/reservations/:id', deleteReservation);
+
+router.put('/api/rentals/:id', updateRental);
+router.delete('/api/rentals/:id', deleteRental);
+
+
+// USER ONLY ROUTES
+router.use(authUserMiddleware); 
+router.post('/api/rentals', createRental);
+router.get('/api/rentals', getAllRentals);
+router.get('/api/rentals/:id', getRentalById);
+router.put('/api/rentals/:id', updateRental);
+router.delete('/api/rentals/:id', deleteRental);
 
 router.get('/api/authors', getAllAuthors);
 router.get('/api/authors/:id', getAuthorById);

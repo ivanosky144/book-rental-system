@@ -8,8 +8,11 @@ dotenv.config();
 
 const app = express();
 
+const CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+
 import cors from 'cors';
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { customCssUrl: CSS_URL }));
 app.get('/', (req, res) => {
   console.log('📥 Received request on root route (/)');
   res.send('📚 Book Rental API is running');

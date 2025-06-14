@@ -12,7 +12,7 @@ https://book-rental-system-api.vercel.app/
 ## Backend Development Process
 
 ### Here's the latest API documentation:
-https://book-rental-system-api.vercel.app/api/api-docs
+https://book-rental-system-api.vercel.app/api-docs
 
 ### You can start the development process by running these commands:
 
@@ -33,7 +33,7 @@ npx sequelize db:migrate
 ```
 3. Running the app
 ```
-npm dev
+npm run dev
 ```
 
 ## Frontend Development Process
@@ -46,5 +46,5 @@ npm install
 ```
 2. Running the app
 ```
-npm dev
+npm run dev
 ```

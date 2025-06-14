@@ -43,7 +43,7 @@ export const adminLogin = async (req, res) => {
     if (!admin) return res.status(401).json({ message: 'Invalid email or password' });
     const match = await bcrypt.compare(password, admin.password);
     if (!match) return res.status(401).json({ message: 'Invalid email or password' });
-    const token = jwt.sign({ id: admin.id, email: admin.email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: admin.id, email: admin.email, role: 'admin' }, JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ message: 'Admin logged in successfully', token, admin: { id: admin.id, name: admin.name, email: admin.email} });
   } catch (error) {
     res.status(500).json({ message: 'Failed to login', error });

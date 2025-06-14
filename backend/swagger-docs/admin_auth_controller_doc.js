@@ -7,7 +7,7 @@
  * /api/admins/register:
  *   post:
  *     summary: Register a new admin
- *     tags: [Auth]
+ *     tags: [Admin Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +64,7 @@
  * /api/admins/login:
  *   post:
  *     summary: Admin login
- *     tags: [Auth]
+ *     tags: [Admin Auth]
  *     requestBody:
  *       required: true
  *       content:
